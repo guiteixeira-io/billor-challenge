@@ -3,19 +3,36 @@ services:
   automation-service:
     build: ./automation-service
     container_name: automation-service
-    volumes:
-      - ./automation-service:/app
     networks:
-      - automation-network
+      - internal-network
+    volumes:
+      - ./logs:/app/logs
+    environment:
+      - AUTOMATION_API_KEY=${AUTOMATION_API_KEY}
     depends_on:
-      - gpt-service
+      gpt-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   gpt-service:
     build: ./gpt-service
     container_name: gpt-service
     networks:
-      - automation-network
+      - internal-network
+    volumes:
+      - ./logs:/app/logs
+    environment:
+      - GPT_API_KEY=${GPT_API_KEY}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/summarize-loads"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 networks:
-  automation-network:
+  internal-network:
     driver: bridge
