@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  automation-service:
+    build: ./automation-service
+    container_name: automation-service
+    volumes:
+      - ./automation-service:/app
+    networks:
+      - automation-network
+    depends_on:
+      - gpt-service
+
+  gpt-service:
+    build: ./gpt-service
+    container_name: gpt-service
+    networks:
+      - automation-network
+
+networks:
+  automation-network:
+    driver: bridge
