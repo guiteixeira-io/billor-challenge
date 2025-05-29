@@ -13,8 +13,5 @@ RUN npm install
 # Copia todo o restante do código-fonte para o container
 COPY . .
 
-
-
-
 # Comando para iniciar a aplicação
 CMD ["node", "src/server.js"]
