@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: automation-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: automation-service
+  template:
+    metadata:
+      labels:
+        app: automation-service
+    spec:
+      containers:
+        - name: automation-service
+          image: myrepo/automation-service:latest
+          ports:
+            - containerPort: 3001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: automation-service
+spec:
+  selector:
+    app: automation-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3001

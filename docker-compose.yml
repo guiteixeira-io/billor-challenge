@@ -13,7 +13,7 @@ services:
       gpt-service:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      test: ["CMD", "curl", "-f", "http://localhost:3001/metrics"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -32,6 +32,30 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+networks:
+  internal-network:
+    driver: bridge
+
+    version: '3.8'
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: loads_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - internal-network
+
+volumes:
+  pgdata:
 
 networks:
   internal-network:

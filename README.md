@@ -49,3 +49,15 @@ Project composed of two services (automation-service and gpt-service) orchestrat
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+# CI/CD e Infraestrutura como Código
+
+## CI/CD com GitHub Actions
+1. Push ou Pull Request ativa testes e build.
+2. A imagem Docker é publicada no Docker Hub.
+3. O deploy é feito automaticamente no Kubernetes.
+
+## Infraestrutura com Terraform
+```bash
+terraform init
+terraform apply -auto-approve
