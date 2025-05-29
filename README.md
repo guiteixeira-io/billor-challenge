@@ -7,7 +7,7 @@ Project composed of two services (automation-service and gpt-service) orchestrat
 ## Project Structure
 
 - **automation-service**: Node.js service that uses Puppeteer for web navigation automation.
-- **gpt-service**: Service (details to be implemented).
+- **gpt-service**: Node.js service exposing a `/summarize-loads` endpoint that summarizes load data using OpenAI GPT.
 
 ## How to run the project
 
@@ -16,16 +16,17 @@ Project composed of two services (automation-service and gpt-service) orchestrat
    git clone https://github.com/your-username/billor-challenge.git
    cd billor-challenge
    ```
-2. Start the services:
+2. Create a `.env` file in each service directory with the required environment variables (see `.env.example` if available).
+3. Start the services:
    ```sh
    docker-compose up --build
    ```
-3. Access the automation service:
-   ```sh
+4. Access the automation service:
+   ```
    http://localhost:3000
    ```
-4. Access the GPT service:
-   ```sh
+5. Access the GPT service:
+   ```
    http://localhost:8000
    ```
 
@@ -50,14 +51,84 @@ Project composed of two services (automation-service and gpt-service) orchestrat
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
-# CI/CD e Infraestrutura como Código
+---
 
-## CI/CD com GitHub Actions
-1. Push ou Pull Request ativa testes e build.
-2. A imagem Docker é publicada no Docker Hub.
-3. O deploy é feito automaticamente no Kubernetes.
+# CI/CD and Infrastructure as Code
 
-## Infraestrutura com Terraform
+## CI/CD with GitHub Actions
+
+1. Every push or pull request triggers automated tests and build.
+2. The Docker image is published to Docker Hub.
+3. Deployment is performed automatically to Kubernetes.
+
+## Infrastructure with Terraform
+
+To provision infrastructure on AWS using Terraform:
+
 ```bash
 terraform init
 terraform apply -auto-approve
+```
+
+---
+
+## Additional Information
+
+### Requirements
+
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- Node.js (for local development)
+- Access to OpenAI API (for GPT service)
+- PostgreSQL (runs as a container)
+
+### Healthcheck Endpoints
+
+- Automation Service: `http://localhost:3001/metrics`
+- GPT Service: `http://localhost:8000/summarize-loads`
+- PostgreSQL: `localhost:5432` (default user/password: `postgres`)
+
+### Useful Commands
+
+- Stop all services:
+  ```sh
+  docker-compose down
+  ```
+- View logs:
+  ```sh
+  docker-compose logs -f
+  ```
+- Run tests (inside each service directory):
+  ```sh
+  npm test
+  ```
+
+### Folder Structure
+
+```
+billor-challenge/
+│
+├── automation-service/
+│   ├── src/
+│   ├── Dockerfile
+│   └── ...
+├── gpt-service/
+│   ├── src/
+│   ├── Dockerfile
+│   └── ...
+├── database/
+│   ├── schema.sql
+│   └── queries.sql
+├── terraform/
+│   └── main.tf
+├── k8s/
+│   └── deployment.yaml
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+## Contact
+
+For questions or suggestions, open an issue or contact the repository maintainer.

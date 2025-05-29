@@ -1,3 +1,9 @@
+/**
+ * Função responsável por gerar o prompt que será enviado ao modelo GPT.
+ * Recebe um array de cargas e monta um texto estruturado para análise.
+ * @param {Array} loads - Lista de objetos contendo informações das cargas
+ * @returns {string} Prompt formatado para o modelo GPT
+ */
 function generatePrompt(loads) {
     return `
     Você é um assistente especializado em análise de cargas. 
@@ -14,4 +20,5 @@ function generatePrompt(loads) {
     `;
 }
 
+// Exporta a função para ser utilizada em outros módulos
 module.exports = { generatePrompt };

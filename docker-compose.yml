@@ -1,62 +1,60 @@
-version: '3.8'
+version: '3.8' # Versão do Docker Compose
+
 services:
+  # Serviço responsável pela automação com Puppeteer
   automation-service:
-    build: ./automation-service
-    container_name: automation-service
+    build: ./automation-service # Caminho do Dockerfile do serviço
+    container_name: automation-service # Nome do container
     networks:
-      - internal-network
+      - internal-network # Rede interna compartilhada
     volumes:
-      - ./logs:/app/logs
+      - ./logs:/app/logs # Volume compartilhado para logs
     environment:
-      - AUTOMATION_API_KEY=${AUTOMATION_API_KEY}
+      - AUTOMATION_API_KEY=${AUTOMATION_API_KEY} # Variável de ambiente segura
     depends_on:
       gpt-service:
-        condition: service_healthy
+        condition: service_healthy # Só inicia após o gpt-service estar saudável
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3001/metrics"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      test: ["CMD", "curl", "-f", "http://localhost:3001/metrics"] # Verifica integridade via endpoint de métricas
+      interval: 30s # Intervalo entre checagens
+      timeout: 10s # Tempo limite da checagem
+      retries: 3 # Tentativas antes de considerar como unhealthy
 
+  # Serviço responsável pelo endpoint de resumo com GPT
   gpt-service:
-    build: ./gpt-service
-    container_name: gpt-service
+    build: ./gpt-service # Caminho do Dockerfile do serviço
+    container_name: gpt-service # Nome do container
     networks:
-      - internal-network
+      - internal-network # Rede interna compartilhada
     volumes:
-      - ./logs:/app/logs
+      - ./logs:/app/logs # Volume compartilhado para logs
     environment:
-      - GPT_API_KEY=${GPT_API_KEY}
+      - GPT_API_KEY=${GPT_API_KEY} # Variável de ambiente segura
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/summarize-loads"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/summarize-loads"] # Verifica integridade via endpoint
       interval: 30s
       timeout: 10s
       retries: 3
 
-networks:
-  internal-network:
-    driver: bridge
-
-    version: '3.8'
-services:
+  # Banco de dados PostgreSQL para persistência dos dados
   postgres:
-    image: postgres:15
-    container_name: postgres-db
-    restart: always
+    image: postgres:15 # Imagem oficial do PostgreSQL
+    container_name: postgres-db # Nome do container
+    restart: always # Reinicia automaticamente em caso de falha
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: loads_db
+      POSTGRES_USER: postgres # Usuário padrão
+      POSTGRES_PASSWORD: postgres # Senha padrão
+      POSTGRES_DB: loads_db # Nome do banco de dados
     ports:
-      - "5432:5432"
+      - "5432:5432" # Mapeamento da porta padrão do PostgreSQL
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data # Volume para persistência dos dados do banco
     networks:
-      - internal-network
+      - internal-network # Rede interna compartilhada
 
 volumes:
-  pgdata:
+  pgdata: # Volume nomeado para dados do PostgreSQL
 
 networks:
-  internal-network:
+  internal-network: # Rede bridge interna para comunicação entre os serviços
     driver: bridge

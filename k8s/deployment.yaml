@@ -1,31 +1,34 @@
+# Deployment do serviço de automação no Kubernetes
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: automation-service
+  name: automation-service # Nome do deployment
 spec:
-  replicas: 2
+  replicas: 2 # Número de réplicas (pods) para alta disponibilidade
   selector:
     matchLabels:
-      app: automation-service
+      app: automation-service # Seleciona pods com este label
   template:
     metadata:
       labels:
-        app: automation-service
+        app: automation-service # Label usada para identificar os pods deste deployment
     spec:
       containers:
-        - name: automation-service
-          image: myrepo/automation-service:latest
+        - name: automation-service # Nome do container
+          image: myrepo/automation-service:latest # Imagem Docker a ser utilizada
           ports:
-            - containerPort: 3001
+            - containerPort: 3001 # Porta exposta pelo container
+
 ---
+# Service para expor o deployment na rede interna do cluster
 apiVersion: v1
 kind: Service
 metadata:
-  name: automation-service
+  name: automation-service # Nome do serviço
 spec:
   selector:
-    app: automation-service
+    app: automation-service # Seleciona pods com este label
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 3001
+      port: 80 # Porta exposta pelo serviço dentro do cluster
+      targetPort: 3001 # Porta do container para onde o tráfego será direcionado
