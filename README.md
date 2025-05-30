@@ -103,6 +103,48 @@ terraform apply -auto-approve
   npm test
   ```
 
+### Docker Build Instructions
+
+To build the Docker images for each service manually, use the following commands from the root of the project:
+
+- Build the automation-service image:
+
+  ```sh
+  docker build -t automation-service ./automation-service
+  ```
+
+- Build the gpt-service image:
+  ```sh
+  docker build -t gpt-service ./gpt-service
+  ```
+
+You can also build all services at once using Docker Compose:
+
+```sh
+docker-compose build
+```
+
+If you want to force a rebuild (ignoring cache):
+
+```sh
+docker-compose build --no-cache
+```
+
+After building, start the services:
+
+```sh
+docker-compose up
+```
+
+To stop and remove all containers, networks, and volumes created by `up`:
+
+```sh
+docker-compose down -v
+```
+
+**Tip:**  
+Always ensure your `.env` files are correctly configured before building and running the containers.
+
 ### Folder Structure
 
 ```
